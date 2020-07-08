@@ -1,5 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
+from connect import Connect
+from pymongo import MongoClient
+from pprint import pprint
+
+connection = Connect.get_connection()
+db = connection.Elizabeth_DB
 
 # config
 DEBUG = True
@@ -13,21 +19,8 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 # TODO: get data from db
 @app.route('/footer', methods=['GET'])
-def get_footer():
-
-    response_object = {
-        'info': {
-            'mobile': '(64)22 123 4567',
-            'email': 'ebdesign@gmail.com',
-            'address': 'Auckland, New Zealand'
-        },
-        'links': {
-            'facebook': 'https://www.facebook.com/cuciocj',
-            'instagram': 'https://www.instagram.com/cuciocj',
-            'twitter': 'https://www.twitter.com/cuciocj'
-        }
-    }
-    
+def get_footer():    
+    response_object = db.footerCollection.find_one({}, {"_id": 0})
     return jsonify(response_object)
 
 @app.route('/home', methods=['GET'])
@@ -35,7 +28,7 @@ def get_home():
 
     response_object = {
         'welcome_jumbotron': {
-            'header': 'Elizabeth by Design',
+            'header': 'Elizabeth by Designz',
             'subheader': 'Welcome to Elizabeth by Design,' 
                 + ' where we work with you to create your perfect outfit,' 
                 + ' whether it be for casual, formal or work.'
@@ -46,7 +39,7 @@ def get_home():
 
 @app.route('/test', methods=['GET'])
 def hello():
-    return jsonify('hello world!')
+    return jsonify("hello world")
 
 if __name__ == '__main__':
     app.run()
