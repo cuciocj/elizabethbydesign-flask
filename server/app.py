@@ -25,16 +25,7 @@ def get_footer():
 
 @app.route('/home', methods=['GET'])
 def get_home():
-
-    response_object = {
-        'welcome_jumbotron': {
-            'header': 'Elizabeth by Designz',
-            'subheader': 'Welcome to Elizabeth by Design,' 
-                + ' where we work with you to create your perfect outfit,' 
-                + ' whether it be for casual, formal or work.'
-        }
-    }
-
+    response_object = db.homeCollection.find_one({}, {"_id": 0})
     return jsonify(response_object)
 
 @app.route('/test', methods=['GET'])
