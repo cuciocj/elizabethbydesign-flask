@@ -3,6 +3,8 @@ from flask_cors import CORS
 from connect import Connect
 from pymongo import MongoClient
 from pprint import pprint
+from bson import json_util
+import json
 
 connection = Connect.get_connection()
 db = connection.Elizabeth_DB
@@ -26,6 +28,28 @@ def get_footer():
 @app.route('/home', methods=['GET'])
 def get_home():
     response_object = db.homeCollection.find_one({}, {"_id": 0})
+    return jsonify(response_object)
+
+@app.route('/contact_us', methods=['GET'])
+def get_contact_us():
+    pipeline = [
+            {
+                '$lookup': {
+                    'from': 'footerCollection', 
+                    'localField': 'string', 
+                    'foreignField': 'string', 
+                    'as': 'contactInfo'
+                }
+            }, {
+                '$project': {
+                    '_id': False,
+                    'keepInTouch.contactInfo': False,
+                    'contactInfo._id': False
+                }
+            }
+        ]
+    response_object = list(db.contactCollection.aggregate(pipeline))[0]
+    pprint(json.dumps(response_object, default=json_util.default))
     return jsonify(response_object)
 
 @app.route('/test', methods=['GET'])
