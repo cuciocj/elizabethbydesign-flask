@@ -30,6 +30,12 @@ def get_home():
     response_object = db.homeCollection.find_one({}, {"_id": 0})
     return jsonify(response_object)
 
+@app.route('/about_us', methods=['GET'])
+def get_about_us():
+    response_object = db.aboutUsCollection.find_one({}, {"_id": 0})
+    pprint(response_object)
+    return jsonify(response_object)
+
 @app.route('/contact_us', methods=['GET'])
 def get_contact_us():
     pipeline = [
