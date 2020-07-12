@@ -6,6 +6,7 @@ from pprint import pprint
 from bson import json_util
 import json
 
+# instantiate db connection
 connection = Connect.get_connection()
 db = connection.Elizabeth_DB
 
@@ -19,7 +20,6 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-# TODO: get data from db
 @app.route('/footer', methods=['GET'])
 def get_footer():    
     response_object = db.footerCollection.find_one({}, {"_id": 0})
@@ -33,7 +33,12 @@ def get_home():
 @app.route('/about_us', methods=['GET'])
 def get_about_us():
     response_object = db.aboutUsCollection.find_one({}, {"_id": 0})
-    pprint(response_object)
+    return jsonify(response_object)
+
+# get data from db
+@app.route('/style', methods=['GET'])
+def get_style():
+    response_object = db.styleCollection.find_one({}, {"_id": 0})
     return jsonify(response_object)
 
 @app.route('/contact_us', methods=['GET'])
