@@ -35,10 +35,14 @@ def get_about_us():
     response_object = db.aboutUsCollection.find_one({}, {"_id": 0})
     return jsonify(response_object)
 
-# get data from db
 @app.route('/style', methods=['GET'])
 def get_style():
     response_object = db.styleCollection.find_one({}, {"_id": 0})
+    return jsonify(response_object)
+
+@app.route('/measurement', methods=['GET'])
+def get_measurement():
+    response_object = db.measurementCollection.find_one({}, {"_id": 0})
     return jsonify(response_object)
 
 @app.route('/contact_us', methods=['GET'])
