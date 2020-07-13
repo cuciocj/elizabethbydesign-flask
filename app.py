@@ -1,10 +1,14 @@
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, make_response, render_template
 from flask_cors import CORS
 from connect import Connect
 from pymongo import MongoClient
 from pprint import pprint
 from bson import json_util
 import json
+import os
+
+# Getting static asset
+WHERE_FOLDER = os.path.join('static', 'where/casual')
 
 # instantiate db connection
 connection = Connect.get_connection()
@@ -16,6 +20,7 @@ DEBUG = True
 # instantiate app
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.config['UPLOAD_FOLDER'] = WHERE_FOLDER
 
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
@@ -33,6 +38,11 @@ def get_home():
 @app.route('/about_us', methods=['GET'])
 def get_about_us():
     response_object = db.aboutUsCollection.find_one({}, {"_id": 0})
+    return jsonify(response_object)
+
+@app.route('/where', methods=['GET'])
+def where():
+    response_object = db.whereCollection.find_one({}, {"_id": 0})
     return jsonify(response_object)
 
 @app.route('/style', methods=['GET'])
@@ -69,7 +79,8 @@ def get_contact_us():
 
 @app.route('/test', methods=['GET'])
 def hello():
-    return jsonify("hello world")
+    full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
+    return render_template("index.html", user_image = full_filename)
 
 if __name__ == '__main__':
     app.run()
