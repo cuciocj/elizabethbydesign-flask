@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, render_template
+from flask import Flask, jsonify, Response, request, make_response, render_template
 from flask_cors import CORS
 from connect import Connect
 from pymongo import MongoClient
@@ -27,8 +27,11 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 @app.route('/footer', methods=['GET'])
 def get_footer():    
-    response_object = db.footerCollection.find_one({}, {"_id": 0})
-    return jsonify(response_object)
+    response_object = db.footerCollection.find_one()
+    return Response(
+        json_util.dumps(response_object),
+        mimetype='application/json'
+    )
 
 @app.route('/home', methods=['GET'])
 def get_home():
