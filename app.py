@@ -3,7 +3,7 @@ from flask_cors import CORS
 from connect import Connect
 from pymongo import MongoClient
 from pprint import pprint
-from bson import json_util
+from bson import json_util, ObjectId
 import json
 import os
 
@@ -32,6 +32,16 @@ def get_footer():
         json_util.dumps(response_object),
         mimetype='application/json'
     )
+
+@app.route('/footer/<object_id>', methods=['PUT'])
+def update_footer(object_id):
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    db.footerCollection.update(
+        {'_id': ObjectId(object_id)},
+        post_data
+    )
+    return jsonify(response_object)
 
 @app.route('/home', methods=['GET'])
 def get_home():
