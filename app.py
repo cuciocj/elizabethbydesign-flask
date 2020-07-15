@@ -55,7 +55,21 @@ def get_about_us():
 
 @app.route('/where', methods=['GET'])
 def where():
-    response_object = db.whereCollection.find_one({}, {"_id": 0})
+    response_object = db.whereCollection.find_one()
+    return Response(
+        json_util.dumps(response_object),
+        mimetype='application/json'
+    )
+
+@app.route('/where/<object_id>', methods=['PUT'])
+def update_where(object_id):
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    print(post_data["ref"])
+    db.whereCollection.update(
+        {'_id': ObjectId(object_id)},
+        {'$set': {post_data["ref"]: post_data}}
+    )
     return jsonify(response_object)
 
 @app.route('/style', methods=['GET'])
