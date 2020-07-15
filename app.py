@@ -80,14 +80,38 @@ def get_contact_us():
                 }
             }, {
                 '$project': {
-                    '_id': False,
                     'keepInTouch.contactInfo': False,
                     'contactInfo._id': False
                 }
             }
         ]
     response_object = list(db.contactCollection.aggregate(pipeline))[0]
-    pprint(json.dumps(response_object, default=json_util.default))
+    # pprint(json.dumps(response_object, default=json_util.default))
+    # return jsonify(response_object)
+    return Response(
+        json_util.dumps(response_object),
+        mimetype='application/json'
+    )
+
+@app.route('/contact_us/<object_id>', methods=['PUT'])
+def update_contact_us(object_id):
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    pprint(post_data)
+    db.contactCollection.update(
+        {'_id': ObjectId(object_id)},
+        {
+            '$set': {
+                'header': post_data.get('header'),
+                'subheader': post_data.get('subheader'),
+                'calendlyApi': post_data.get('calendlyApi'),
+                'keepInTouch': {
+                    'header': post_data.get('keepInTouch').get('header'),
+                    'subheading': post_data.get('keepInTouch').get('subheading')
+                }
+            }
+        }
+    )
     return jsonify(response_object)
 
 @app.route('/test', methods=['GET'])
