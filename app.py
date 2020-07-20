@@ -99,7 +99,20 @@ def update_where(object_id):
 
 @app.route('/style', methods=['GET'])
 def get_style():
-    response_object = db.styleCollection.find_one({}, {"_id": 0})
+    response_object = db.styleCollection.find_one()
+    return Response(
+        json_util.dumps(response_object),
+        mimetype='application/json'
+    )
+
+@app.route('/style/<object_id>', methods=['PUT'])
+def update_style(object_id):
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    db.styleCollection.update(
+        {'_id': ObjectId(object_id)},
+        post_data
+    )
     return jsonify(response_object)
 
 @app.route('/measurement', methods=['GET'])
