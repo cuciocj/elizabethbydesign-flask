@@ -91,8 +91,11 @@ def get_style():
 
 @app.route('/measurement', methods=['GET'])
 def get_measurement():
-    response_object = db.measurementCollection.find_one({}, {"_id": 0})
-    return jsonify(response_object)
+    response_object = db.measurementCollection.find_one()
+    return Response(
+        json_util.dumps(response_object),
+        mimetype='application/json'
+    )
 
 @app.route('/contact_us', methods=['GET'])
 def get_contact_us():
