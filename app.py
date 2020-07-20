@@ -63,7 +63,20 @@ def update_home(object_id):
 
 @app.route('/about_us', methods=['GET'])
 def get_about_us():
-    response_object = db.aboutUsCollection.find_one({}, {"_id": 0})
+    response_object = db.aboutUsCollection.find_one()
+    return Response(
+        json_util.dumps(response_object),
+        mimetype='application/json'
+    )
+
+@app.route('/about_us/<object_id>', methods=['PUT'])
+def update_about_us(object_id):
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    db.aboutUsCollection.update(
+        {'_id': ObjectId(object_id)},
+        post_data
+    )
     return jsonify(response_object)
 
 @app.route('/where', methods=['GET'])
