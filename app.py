@@ -169,12 +169,38 @@ def update_contact_us(object_id):
     )
     return jsonify(response_object)
 
+@app.route('/get_customers', methods=['GET'])
+def get_customers():
+    response_object = db.userCollection.find()
+    return Response(
+        json_util.dumps(response_object),
+        mimetype='application/json'
+    )
+
 @app.route('/adduser', methods=['PUT'])
 def add_user():
     response_object = {'status': 'success'}
     post_data = request.get_json()
     pprint(post_data)
     db.userCollection.insert_one(post_data)
+    return jsonify(response_object)
+
+@app.route('/update_customer', methods=['PUT'])
+def update_customer():
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    # pprint(post_data.get("_id").get("$oid"))
+    db.userCollection.update(
+        {'_id': ObjectId(post_data.get("_id").get("$oid"))},
+        {
+            '$set': {
+                'name': post_data.get('name'),
+                'email': post_data.get('email'),
+                'phone': post_data.get('phone'),
+                'notes': post_data.get('notes')
+            }
+        }
+    )
     return jsonify(response_object)
 
 @app.route('/test', methods=['GET'])
