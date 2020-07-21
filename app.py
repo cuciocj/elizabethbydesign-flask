@@ -169,6 +169,14 @@ def update_contact_us(object_id):
     )
     return jsonify(response_object)
 
+@app.route('/adduser', methods=['PUT'])
+def add_user():
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    pprint(post_data)
+    db.userCollection.insert_one(post_data)
+    return jsonify(response_object)
+
 @app.route('/test', methods=['GET'])
 def hello():
     full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
