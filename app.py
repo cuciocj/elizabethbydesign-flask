@@ -194,9 +194,6 @@ def update_customer():
         {'_id': ObjectId(post_data.get("_id").get("$oid"))},
         {
             '$set': {
-                'name': post_data.get('name'),
-                'email': post_data.get('email'),
-                'phone': post_data.get('phone'),
                 'notes': post_data.get('notes')
             }
         }
