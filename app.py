@@ -123,6 +123,16 @@ def get_measurement():
         mimetype='application/json'
     )
 
+@app.route('/measurement/<object_id>', methods=['PUT'])
+def update_measurement(object_id):
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    db.measurementCollection.update(
+        {'_id': ObjectId(object_id)},
+        {'$set': {post_data["ref"]: post_data}}
+    )
+    return jsonify(response_object)
+
 @app.route('/contact_us', methods=['GET'])
 def get_contact_us():
     pipeline = [
