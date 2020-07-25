@@ -151,8 +151,6 @@ def get_contact_us():
             }
         ]
     response_object = list(db.contactCollection.aggregate(pipeline))[0]
-    # pprint(json.dumps(response_object, default=json_util.default))
-    # return jsonify(response_object)
     return Response(
         json_util.dumps(response_object),
         mimetype='application/json'
@@ -214,6 +212,19 @@ def update_customer():
 def hello():
     full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
     return render_template("index.html", user_image = full_filename)
+
+@app.route('/imgs', methods=['POST'])
+def imgs():
+    dir = request.form['dir']
+    if request.files:
+        for file in request.files:
+            img = request.files[file]
+            img.save(os.path.join("static/where",dir,file + ".jpg"))
+    # dir = request.form['dir1']
+    # os.makedirs("C:/flask-projects/elizabethbydesign-flask/static/where/" + dir)
+    
+    return jsonify("done")
+    
 
 if __name__ == '__main__':
     app.run()
