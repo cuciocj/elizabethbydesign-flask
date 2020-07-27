@@ -7,9 +7,6 @@ from bson import json_util, ObjectId
 import json
 import os
 
-# Getting static asset
-WHERE_FOLDER = os.path.join('static', 'where/casual')
-
 # instantiate db connection
 connection = Connect.get_connection()
 db = connection.Elizabeth_DB
@@ -20,7 +17,6 @@ DEBUG = True
 # instantiate app
 app = Flask(__name__)
 app.config.from_object(__name__)
-app.config['UPLOAD_FOLDER'] = WHERE_FOLDER
 
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
@@ -93,7 +89,7 @@ def update_where(object_id):
     post_data = request.get_json()
     db.whereCollection.update(
         {'_id': ObjectId(object_id)},
-        {'$set': {post_data["ref"]: post_data}}
+        {'$set': {post_data["ref"] : post_data["tab"]}}
     )
     return jsonify(response_object)
 
@@ -197,7 +193,6 @@ def add_user():
 def update_customer():
     response_object = {'status': 'success'}
     post_data = request.get_json()
-    # pprint(post_data.get("_id").get("$oid"))
     db.userCollection.update(
         {'_id': ObjectId(post_data.get("_id").get("$oid"))},
         {
@@ -208,20 +203,17 @@ def update_customer():
     )
     return jsonify(response_object)
 
-@app.route('/test', methods=['GET'])
-def hello():
-    full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
-    return render_template("index.html", user_image = full_filename)
-
 @app.route('/imgs', methods=['POST'])
 def imgs():
     dir = request.form['dir']
     if request.files:
         for file in request.files:
             img = request.files[file]
-            img.save(os.path.join("static/where",dir,file + ".jpg"))
-    # dir = request.form['dir1']
-    # os.makedirs("C:/flask-projects/elizabethbydesign-flask/static/where/" + dir)
+            try:
+                img.save(os.path.join("static/where",dir,file + ".jpg"))
+            except:
+                os.makedirs("static/where/" + dir)
+                img.save(os.path.join("static/where",dir,file + ".jpg"))
     
     return jsonify("done")
     
