@@ -216,7 +216,10 @@ def imgs():
                 img.save(os.path.join("static/where",dir,file + ".jpg"))
     
     return jsonify("done")
-    
+
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify("hello world")
 
 if __name__ == '__main__':
     app.run()
